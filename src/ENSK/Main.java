@@ -1,6 +1,6 @@
 package ENSK;
 
-import javax.swing.*;
+import ENSK.Windows.LoginFrame;
 
 
 public class Main {
@@ -10,9 +10,8 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
-        //Window window = new Window();
-        //window.Window();
-        WindowSuperMarket windowSuperMarket = new WindowSuperMarket("window");
+
+        LoginFrame loginFrame = new LoginFrame();
 
 
         Article milk = createArticle("Norrmejeri 3,0% fett", 12.74f, 15.75f, 5, 12, 2017, 0000001);

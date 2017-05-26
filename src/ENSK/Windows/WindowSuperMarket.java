@@ -1,9 +1,11 @@
-package ENSK;
+package ENSK.Windows;
 
 import org.apache.batik.swing.JSVGCanvas;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by Enathen on 2017-04-22.
@@ -98,6 +100,12 @@ public class WindowSuperMarket extends JFrame{
 
             }
 
+        });
+        SaveArticles.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
         });
     }
     private boolean restrictToFloat(JTextField textField, JLabel label){
