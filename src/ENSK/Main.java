@@ -27,7 +27,7 @@ public class Main {
         Category mejeri = new Category("Mejeri");
         Category deli = new Category("Deli");
         Category allArticlesInStore = new Category("All Articles");
-        deli.addArticle(milk);
+        /*deli.addArticle(milk);
         deli.addArticle(magneficoChili);
         mejeri.addArticle(bregott);
         mejeri.addArticle(pucko);
@@ -41,7 +41,7 @@ public class Main {
         statistics.CompareTwoCategories(mejeri, deli);
         statistics.printAllCategoriesInStatistics();
         allArticlesInStore.addSeveralArticles(deli.treeSetOfArticles);
-        allArticlesInStore.addSeveralArticles(mejeri.treeSetOfArticles);
+        allArticlesInStore.addSeveralArticles(mejeri.treeSetOfArticles);*/
 
 
         //allArticlesInStore.printPieGraph();
