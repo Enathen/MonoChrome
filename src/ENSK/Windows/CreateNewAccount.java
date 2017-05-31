@@ -8,6 +8,7 @@ import java.awt.event.WindowEvent;
 import java.security.SecureRandom;
 import java.sql.*;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -82,14 +83,27 @@ public class CreateNewAccount extends JFrame{
                 }
                 if(!(usernameTextField.getText().length() > 3)){
                     userNameIncorrectLabel.setText("<html>Username incorrect!<br>Atleast 3 char!</html>");
+                    userNameIncorrectLabel.setVisible(true);
                     working = false;
 
                 }
                 if(!checkIfEmail()){
+                    emailIncorrectLabel.setText("<html>Email incorrect!</html>");
                     emailIncorrectLabel.setVisible(true);
                     working = false;
                 }else{
                     emailIncorrectLabel.setVisible(false);
+                }
+                try {
+                    if(checkIfEmailExists()){
+                        emailIncorrectLabel.setText("<html>Email already<br> Exists!</html>");
+                        emailIncorrectLabel.setVisible(true);
+                        working = false;
+                    }
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (ClassNotFoundException e1) {
+                    e1.printStackTrace();
                 }
 
                 if(working){
@@ -150,7 +164,7 @@ public class CreateNewAccount extends JFrame{
             String userNameCorrect = userNameCorrect();
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(2, userNameCorrect);
-            preparedStatement.setString(3, emailTextField.getText());
+            preparedStatement.setString(3, emailTextField.getText().toLowerCase());
 
             if(String.valueOf(comboBox1.getSelectedItem()).endsWith("you work?")){
                 preparedStatement.setString(4,null);
@@ -241,14 +255,33 @@ public class CreateNewAccount extends JFrame{
         }
         return false;
     }
+
+    /**
+     * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
+    private boolean checkIfEmailExists() throws SQLException, ClassNotFoundException {
+        if(connection == null){
+            getConnection();
+        }
+
+        String sql = "select email from Account where email = ?";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, emailTextField.getText().toLowerCase());
+        System.out.println(emailTextField.getText().toLowerCase());
+        ResultSet resultSet = statement.executeQuery();
+        while (resultSet.next()){
+            return true;
+        }
+        return false;
+    }
     private String createSalt() {
         SecureRandom random = new SecureRandom();
         String string = "";
         for (int i = 0; i < 50; i++) {
-            System.out.println(random.nextInt(58));
             string += (char)(random.nextInt(58) + 65);
         }
-        System.out.println(string);
         return string;
     }
     private long createHash(String salt){
@@ -257,11 +290,11 @@ public class CreateNewAccount extends JFrame{
 
     }
     public static long hash(String string) {
-        long h = 1125899906842597L; // prime
+        long h = 288230376151711717L; // prime
         int len = string.length();
 
         for (int i = 0; i < len; i++) {
-            h = 31*h + string.charAt(i);
+            h = 37*h + string.charAt(i);
         }
         return h;
     }

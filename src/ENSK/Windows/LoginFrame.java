@@ -4,7 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.SecureRandom;
 import java.sql.*;
+import java.util.Arrays;
 
 /**
  * Created by Enathen on 2017-05-26.
@@ -47,16 +49,17 @@ public class LoginFrame extends JFrame{
                 
             }
         });
-        createNewAccountButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
 
-            }
-        });
         createNewAccountButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new CreateNewAccount().setVisible(true);
+            }
+        });
+        forgotPasswordButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new ForgotPassword().setVisible(true);
             }
         });
     }
@@ -82,14 +85,17 @@ public class LoginFrame extends JFrame{
         }
         String userNameCorrect = userNameCorrect();
 
-        String sql = "select password from user where userName = ?";
+        String sql = "select saltedHash, hash from Account where userName = ?";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, userNameCorrect);
         ResultSet resultSet = statement.executeQuery();
         while (resultSet.next()){
-            System.out.println(resultSet.getString(1));
-            System.out.println("HELLO");
-            return true;
+            String saltedPassword = resultSet.getString(1) +
+                    Arrays.toString(passwordPasswordField.getPassword());
+            if(String.valueOf(hash(saltedPassword)).equals(resultSet.getString(2))){
+                return true;
+            }
+            return false;
         }
         return false;
     }
@@ -114,5 +120,15 @@ public class LoginFrame extends JFrame{
     public void getConnection() throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
         connection = DriverManager.getConnection("jdbc:sqlite:ENSK.sqlite");
+    }
+
+    public static long hash(String string) {
+        long h = 288230376151711717L; // prime
+        int len = string.length();
+
+        for (int i = 0; i < len; i++) {
+            h = 37*h + string.charAt(i);
+        }
+        return h;
     }
 }
