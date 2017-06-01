@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.mail.*;
 import javax.mail.internet.*;
+import javax.naming.NamingException;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,7 +18,7 @@ public class Email {
     ConnectionClass connection = new ConnectionClass();
 
 
-    public Email(String email) throws SQLException, ClassNotFoundException {
+    public Email(String email) throws SQLException, ClassNotFoundException, NamingException {
 
         this.email = email.toLowerCase();
         checkIfEmail();
@@ -39,7 +40,11 @@ public class Email {
 
     public boolean checkIfEmailExists() throws SQLException, ClassNotFoundException {
         if (connection == null) {
-            connection.getConnection();
+            try {
+                connection.getConnection();
+            } catch (NamingException e) {
+                e.printStackTrace();
+            }
         }
 
         String sql = "select email from Account where email = ?";
@@ -58,28 +63,42 @@ public class Email {
     // Set up the SMTP server.
 
     public boolean sendEmail() {
-        java.util.Properties props = new java.util.Properties();
-        props.put("mail.smtp.host", "smtp.myisp.com");
-        Session session = Session.getDefaultInstance(props, null);
-
+        final String username = "jonathanalexnorberg@gmail.com";
+        final String password = "Hccolh12";
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.socketFactory.class",
+                "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.port", "465");
+        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
         // Construct the message
-        String to = email;
-        String from = "jontekaminen@hotmail.com";
-        String subject = "Hello";
-        Message msg = new MimeMessage(session);
+        String to = "elinhelgesson96@hotmail.com";
+        String from = "jonathanalexnorberg@gmail.com";
+        String subject = "Hello Darling!";
+
         try {
+            Message msg = new MimeMessage(session);
             msg.setFrom(new InternetAddress(from));
-            msg.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            msg.setRecipients(Message.RecipientType.TO,
+                    InternetAddress.parse(to));
             msg.setSubject(subject);
-            msg.setText("Hi,\n\nHow are you?");
+            msg.setText("Dear miss Elin Helgesson! i finally succeeded to send an email!\n" +
+                    "please write back to my messanger when you see this your cute little cutie<3");
 
             // Send the message.
+
             Transport.send(msg);
+            System.out.println("email sent succesfully");
             return true;
         } catch (MessagingException e) {
-            // Error.
+            throw new RuntimeException();
         }
-        return false;
     }
 
 }

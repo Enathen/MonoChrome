@@ -1,5 +1,6 @@
 package ENSK;
 
+import javax.naming.NamingException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,7 +11,7 @@ import java.sql.SQLException;
 public class Username {
     private ConnectionClass connection = new ConnectionClass();
     private String username;
-    public Username(String username) throws SQLException, ClassNotFoundException {
+    public Username(String username) throws SQLException, ClassNotFoundException, NamingException {
         this.username = username;
     }
 

@@ -5,6 +5,7 @@ import ENSK.Email;
 import ENSK.SaltAndHashPassword;
 import ENSK.Username;
 
+import javax.naming.NamingException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -33,7 +34,7 @@ public class CreateNewAccount extends JFrame{
     /**
      * creates a new account
      */
-    public CreateNewAccount() throws SQLException, ClassNotFoundException {
+    public CreateNewAccount() throws SQLException, ClassNotFoundException, NamingException {
         initialize();
         comboBox1.addItem("Coop Forum Ersboda");
 
@@ -79,11 +80,15 @@ public class CreateNewAccount extends JFrame{
                     }
                 } catch (SQLException | ClassNotFoundException e1) {
                     e1.printStackTrace();
+                } catch (NamingException e1) {
+                    e1.printStackTrace();
                 }
                 Email email= null;
                 try {
                     email = new Email(emailTextField.getText());
                 } catch (SQLException | ClassNotFoundException e1) {
+                    e1.printStackTrace();
+                } catch (NamingException e1) {
                     e1.printStackTrace();
                 }
                 assert email != null;
@@ -107,7 +112,7 @@ public class CreateNewAccount extends JFrame{
                 if(working){
                     try {
                         addUser();
-                    } catch (SQLException | ClassNotFoundException e1) {
+                    } catch (SQLException | ClassNotFoundException | NamingException e1) {
                         e1.printStackTrace();
                     }
                 }
@@ -162,26 +167,26 @@ public class CreateNewAccount extends JFrame{
      * @throws SQLException
      * @throws ClassNotFoundException
      */
-    private void addUser() throws SQLException, ClassNotFoundException {
+    private void addUser() throws SQLException, ClassNotFoundException, NamingException {
         Username username = new Username(usernameTextField.getText());
 
         if(!username.checkIfEqualUsername()){
-            String sql = "INSERT INTO Account (id ,userName, email,workstation,admin, saltedHash, hash) VALUES (?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO Account (userName, email,workstation,admin, saltedHash, hash) VALUES (?,?,?,?,?,?);";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(2, username.userNameCorrect());
-            preparedStatement.setString(3, emailTextField.getText().toLowerCase());
+            preparedStatement.setString(1, username.userNameCorrect());
+            preparedStatement.setString(2, emailTextField.getText().toLowerCase());
 
             if(String.valueOf(comboBox1.getSelectedItem()).endsWith("you work?")){
-                preparedStatement.setString(4,null);
+                preparedStatement.setString(3,null);
             }
             else {
-                preparedStatement.setString(4, String.valueOf(comboBox1.getSelectedItem()));
+                preparedStatement.setString(3, String.valueOf(comboBox1.getSelectedItem()));
             }
-            preparedStatement.setBoolean(5, administratorCheckBox.isSelected());
+            preparedStatement.setBoolean(4, administratorCheckBox.isSelected());
             SaltAndHashPassword saltAndHashPassword = new
                     SaltAndHashPassword(String.valueOf(passwordPasswordField.getPassword()));
-            preparedStatement.setString(6,saltAndHashPassword.createSalt());
-            preparedStatement.setString(7, saltAndHashPassword.createHash());
+            preparedStatement.setString(5,saltAndHashPassword.createSalt());
+            preparedStatement.setString(6, saltAndHashPassword.createHash());
 
             preparedStatement.execute();
             dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));

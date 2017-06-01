@@ -4,6 +4,7 @@ import ENSK.ConnectionClass;
 import ENSK.SaltAndHashPassword;
 import ENSK.Username;
 
+import javax.naming.NamingException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -30,7 +31,7 @@ public class LoginFrame extends JFrame{
     private JLabel userPasswordWrong;
     private ConnectionClass connection = new ConnectionClass();
 
-    public LoginFrame() throws SQLException, ClassNotFoundException {
+    public LoginFrame() throws SQLException, ClassNotFoundException, NamingException {
         initialize();
         welcomeLabel.setFont(new Font("default", Font.PLAIN, 20));
         welcomeLabel.setText("<html>Welcome!<br>Please sign in below:</html>");
@@ -42,7 +43,7 @@ public class LoginFrame extends JFrame{
                 if(checkIfUsernameAndPasswordExists()){
                     new WindowSuperMarket("HELLO").setVisible(true);
                 }
-            } catch (SQLException | ClassNotFoundException e1) {
+            } catch (SQLException | ClassNotFoundException | NamingException e1) {
                 e1.printStackTrace();
             }
 
@@ -54,14 +55,14 @@ public class LoginFrame extends JFrame{
         createNewAccountButton.addActionListener(e -> {
                 try {
                 new CreateNewAccount().setVisible(true);
-            } catch (SQLException | ClassNotFoundException e1) {
+            } catch (SQLException | ClassNotFoundException | NamingException e1) {
                 e1.printStackTrace();
             }
         });
         forgotPasswordButton.addActionListener(e -> {
             try {
                 new ForgotPassword().setVisible(true);
-            } catch (SQLException | ClassNotFoundException e1) {
+            } catch (SQLException | ClassNotFoundException | NamingException e1) {
                 e1.printStackTrace();
             }
         });
@@ -97,7 +98,7 @@ public class LoginFrame extends JFrame{
      * @throws SQLException if database incorrect
      * @throws ClassNotFoundException if class not found
      */
-    private boolean checkIfUsernameAndPasswordExists() throws SQLException, ClassNotFoundException {
+    private boolean checkIfUsernameAndPasswordExists() throws SQLException, ClassNotFoundException, NamingException {
         SaltAndHashPassword saltAndHashPassword = new SaltAndHashPassword(String.valueOf(passwordPasswordField.getPassword()));
         if(connection == null){
             connection.getConnection();

@@ -4,6 +4,7 @@ import ENSK.ConnectionClass;
 import ENSK.Email;
 import ENSK.Username;
 
+import javax.naming.NamingException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -24,7 +25,7 @@ public class ForgotPassword extends JFrame {
     private JLabel incorrectEmailUsernameTextLabel;
     private ConnectionClass connection = new ConnectionClass();
     private boolean connectionHasData = false;
-    public ForgotPassword() throws SQLException, ClassNotFoundException {
+    public ForgotPassword() throws SQLException, ClassNotFoundException, NamingException {
         initialize();
 
         getNewPasswordButton.addActionListener(e -> {
@@ -42,6 +43,8 @@ public class ForgotPassword extends JFrame {
 
                 }
             } catch (SQLException | ClassNotFoundException e1) {
+                e1.printStackTrace();
+            } catch (NamingException e1) {
                 e1.printStackTrace();
             }
         });

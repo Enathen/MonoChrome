@@ -2,6 +2,7 @@ package ENSK;
 
 import ENSK.Windows.LoginFrame;
 
+import javax.naming.NamingException;
 import java.sql.SQLException;
 
 
@@ -15,9 +16,7 @@ public class Main {
 
         try {
             LoginFrame loginFrame = new LoginFrame();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | NamingException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
