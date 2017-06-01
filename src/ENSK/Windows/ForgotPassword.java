@@ -2,6 +2,11 @@ package ENSK.Windows;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  * Created by Enathen on 2017-05-31.
@@ -9,11 +14,21 @@ import java.awt.*;
 public class ForgotPassword extends JFrame {
 
     private JPanel JPanelForgotPassword;
-    private JButton GetNewPassword;
-    private JTextField Email;
-
+    private JButton getNewPasswordButton;
+    private JTextField emailTextField;
+    private JTextField userNameTextfield;
+    private JLabel incorrectEmailUsernameTextLabel;
+    private static Connection connection;
+    private boolean connectionHasData = false;
     public ForgotPassword(){
         initialize();
+
+        getNewPasswordButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
     }
     /**
      * starts the form.

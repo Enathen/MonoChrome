@@ -1,5 +1,9 @@
 package ENSK.Windows;
 
+import ENSK.ConnectionClass;
+import ENSK.SaltAndHashPassword;
+import ENSK.Username;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -22,9 +26,9 @@ public class LoginFrame extends JFrame{
 
     private JLabel welcomeLabel;
     private JLabel userPasswordWrong;
-    private static Connection connection;
+    private ConnectionClass connection = new ConnectionClass();
 
-    public LoginFrame() {
+    public LoginFrame() throws SQLException, ClassNotFoundException {
         initialize();
         welcomeLabel.setFont(new Font("default", Font.PLAIN, 20));
         welcomeLabel.setText("<html>Welcome!<br>Please sign in below:</html>");
@@ -53,7 +57,13 @@ public class LoginFrame extends JFrame{
         createNewAccountButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new CreateNewAccount().setVisible(true);
+                try {
+                    new CreateNewAccount().setVisible(true);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (ClassNotFoundException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
         forgotPasswordButton.addActionListener(new ActionListener() {
@@ -80,8 +90,9 @@ public class LoginFrame extends JFrame{
      * @throws ClassNotFoundException
      */
     private boolean checkIfUsernameAndPasswordExists() throws SQLException, ClassNotFoundException {
+        SaltAndHashPassword saltAndHashPassword = new SaltAndHashPassword(String.valueOf(passwordPasswordField.getPassword()));
         if(connection == null){
-            getConnection();
+            connection.getConnection();
         }
         String userNameCorrect = userNameCorrect();
 
@@ -90,9 +101,10 @@ public class LoginFrame extends JFrame{
         statement.setString(1, userNameCorrect);
         ResultSet resultSet = statement.executeQuery();
         while (resultSet.next()){
-            String saltedPassword = resultSet.getString(1) +
-                    Arrays.toString(passwordPasswordField.getPassword());
-            if(String.valueOf(hash(saltedPassword)).equals(resultSet.getString(2))){
+            saltAndHashPassword.setSalt(resultSet.getString(1));
+
+            if(saltAndHashPassword.createHash().equals(resultSet.getString(2))){
+                connection.close(resultSet, statement);
                 return true;
             }
             return false;
@@ -112,23 +124,5 @@ public class LoginFrame extends JFrame{
 
     }
 
-    /**
-     * gets connection to database
-     * @throws ClassNotFoundException
-     * @throws SQLException
-     */
-    public void getConnection() throws ClassNotFoundException, SQLException {
-        Class.forName("org.sqlite.JDBC");
-        connection = DriverManager.getConnection("jdbc:sqlite:ENSK.sqlite");
-    }
 
-    public static long hash(String string) {
-        long h = 288230376151711717L; // prime
-        int len = string.length();
-
-        for (int i = 0; i < len; i++) {
-            h = 37*h + string.charAt(i);
-        }
-        return h;
-    }
 }

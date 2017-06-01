@@ -1,17 +1,18 @@
 package ENSK.Windows;
 
+import ENSK.ConnectionClass;
+import ENSK.Email;
+import ENSK.SaltAndHashPassword;
+import ENSK.Username;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
-import java.security.SecureRandom;
+
 import java.sql.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 /**
  * Created by Enathen on 2017-05-26.
@@ -30,13 +31,11 @@ public class CreateNewAccount extends JFrame{
     private JLabel passwordIncorrectLabel;
     private JLabel createAccountIncorrect;
     private JLabel userNameIncorrectLabel;
-    private static Connection connection;
-    private boolean connectionHasData = false;
-
+    private ConnectionClass connection = new ConnectionClass();
     /**
      * creates a new account
      */
-    public CreateNewAccount() {
+    public CreateNewAccount() throws SQLException, ClassNotFoundException {
         initialize();
         comboBox1.addItem("Coop Forum Ersboda");
 
@@ -87,7 +86,15 @@ public class CreateNewAccount extends JFrame{
                     working = false;
 
                 }
-                if(!checkIfEmail()){
+                Email email= null;
+                try {
+                    email = new Email(emailTextField.getText());
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (ClassNotFoundException e1) {
+                    e1.printStackTrace();
+                }
+                if(!email.checkIfEmail()){
                     emailIncorrectLabel.setText("<html>Email incorrect!</html>");
                     emailIncorrectLabel.setVisible(true);
                     working = false;
@@ -95,7 +102,7 @@ public class CreateNewAccount extends JFrame{
                     emailIncorrectLabel.setVisible(false);
                 }
                 try {
-                    if(checkIfEmailExists()){
+                    if(email.checkIfEmailExists()){
                         emailIncorrectLabel.setText("<html>Email already<br> Exists!</html>");
                         emailIncorrectLabel.setVisible(true);
                         working = false;
@@ -134,36 +141,17 @@ public class CreateNewAccount extends JFrame{
     }
 
     /**
-     * check if email are a correct format
-     * @return
-     */
-    private boolean checkIfEmail() {
-        Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
-        Matcher m = p.matcher(emailTextField.getText());
-        boolean matchFound = m.matches();
-        if (matchFound) {
-
-            return true;
-
-        }
-        return false;
-    }
-
-    /**
      * add a user.
      * @throws SQLException
      * @throws ClassNotFoundException
      */
     private void addUser() throws SQLException, ClassNotFoundException {
-        if(connection == null){
-            getConnection();
-        }
+        Username username = new Username(usernameTextField.getText());
 
-        if(!checkIfEqualUsername()){
+        if(!username.checkIfEqualUsername()){
             String sql = "INSERT INTO Account (id ,userName, email,workstation,admin, saltedHash, hash) VALUES (?,?,?,?,?,?,?)";
-            String userNameCorrect = userNameCorrect();
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(2, userNameCorrect);
+            preparedStatement.setString(2, username.userNameCorrect());
             preparedStatement.setString(3, emailTextField.getText().toLowerCase());
 
             if(String.valueOf(comboBox1.getSelectedItem()).endsWith("you work?")){
@@ -172,12 +160,11 @@ public class CreateNewAccount extends JFrame{
             else {
                 preparedStatement.setString(4, String.valueOf(comboBox1.getSelectedItem()));
             }
-
-
             preparedStatement.setBoolean(5, administratorCheckBox.isSelected());
-            String salt = createSalt();
-            preparedStatement.setString(6,salt);
-            preparedStatement.setString(7, String.valueOf(createHash(salt)));
+            SaltAndHashPassword saltAndHashPassword = new
+                    SaltAndHashPassword(String.valueOf(passwordPasswordField.getPassword()));
+            preparedStatement.setString(6,saltAndHashPassword.createSalt());
+            preparedStatement.setString(7, saltAndHashPassword.createHash());
 
             preparedStatement.execute();
             dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
@@ -187,116 +174,4 @@ public class CreateNewAccount extends JFrame{
         userNameIncorrectLabel.setVisible(true);
 
     }
-
-    /**
-     * Convert the username to correct format capital letter front rest not capital
-     * @return
-     */
-    private String userNameCorrect() {
-        String string = usernameTextField.getText();
-        String backupString;
-        backupString = string.substring(0,1).toUpperCase();
-        string =  backupString+string.substring(1).toLowerCase();
-        return string;
-
-    }
-
-    /**
-     * gets connection to database
-     * @throws ClassNotFoundException
-     * @throws SQLException
-     */
-    public void getConnection() throws ClassNotFoundException, SQLException {
-        Class.forName("org.sqlite.JDBC");
-        connection = DriverManager.getConnection("jdbc:sqlite:ENSK.sqlite");
-        initialise();
-    }
-
-    /**
-     * Start up the database.
-     * @throws SQLException
-     */
-    private void initialise() throws SQLException {
-        if(!connectionHasData){
-            connectionHasData = true;
-            Statement state = connection.createStatement();
-            ResultSet resultSet = state.executeQuery("SELECT name FROM sqlite_master Where type='table' AND name='Account'");
-            if(!resultSet.next()){
-                Statement state2 = connection.createStatement();
-                state2.execute("CREATE TABLE Account(id integer, userName varchar(80)," +
-                        "email VARCHAR(60),workstation VARCHAR(60),admin BOOLEAN,saltedHash VARCHAR(60), hash VARCHAR(60),  primary key(id));");
-                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Account VALUES (?,?,?,?,?,?,?);");
-                preparedStatement.setString(2,"Enathen");
-                preparedStatement.setString(3,"j@gmail.com");
-                preparedStatement.setString(4,"Coop Ersboda");
-                preparedStatement.setString(5,"1");
-                String salt = createSalt();
-                preparedStatement.setString(6,salt);
-                preparedStatement.setString(7, String.valueOf(createHash(salt)));
-            }
-        }
-    }
-
-    /**
-     * Check if username already exist in database
-     * @return true if there already exist a user false if no user exist.
-     * @throws SQLException
-     * @throws ClassNotFoundException
-     */
-    private boolean checkIfEqualUsername() throws SQLException, ClassNotFoundException {
-        String userNameCorrect = userNameCorrect();
-
-        String sql = "select * from Account where userName = ?";
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setString(1, userNameCorrect);
-        ResultSet resultSet = statement.executeQuery();
-        while (resultSet.next()){
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * @return
-     * @throws SQLException
-     * @throws ClassNotFoundException
-     */
-    private boolean checkIfEmailExists() throws SQLException, ClassNotFoundException {
-        if(connection == null){
-            getConnection();
-        }
-
-        String sql = "select email from Account where email = ?";
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setString(1, emailTextField.getText().toLowerCase());
-        System.out.println(emailTextField.getText().toLowerCase());
-        ResultSet resultSet = statement.executeQuery();
-        while (resultSet.next()){
-            return true;
-        }
-        return false;
-    }
-    private String createSalt() {
-        SecureRandom random = new SecureRandom();
-        String string = "";
-        for (int i = 0; i < 50; i++) {
-            string += (char)(random.nextInt(58) + 65);
-        }
-        return string;
-    }
-    private long createHash(String salt){
-        String hash = salt + Arrays.toString(passwordPasswordField.getPassword());
-        return hash(hash);
-
-    }
-    public static long hash(String string) {
-        long h = 288230376151711717L; // prime
-        int len = string.length();
-
-        for (int i = 0; i < len; i++) {
-            h = 37*h + string.charAt(i);
-        }
-        return h;
-    }
-
 }

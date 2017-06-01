@@ -2,6 +2,8 @@ package ENSK;
 
 import ENSK.Windows.LoginFrame;
 
+import java.sql.SQLException;
+
 
 public class Main {
     /**
@@ -11,7 +13,13 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        LoginFrame loginFrame = new LoginFrame();
+        try {
+            LoginFrame loginFrame = new LoginFrame();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
 
         Article milk = createArticle("Norrmejeri 3,0% fett", 12.74f, 15.75f, 5, 12, 2017, 0000001);
