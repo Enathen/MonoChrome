@@ -1,12 +1,16 @@
 package ENSK.Windows;
 
+import ENSK.ConnectionClass;
+import ENSK.Email;
+import ENSK.Username;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.*;
 
 /**
  * Created by Enathen on 2017-05-31.
@@ -18,18 +22,45 @@ public class ForgotPassword extends JFrame {
     private JTextField emailTextField;
     private JTextField userNameTextfield;
     private JLabel incorrectEmailUsernameTextLabel;
-    private static Connection connection;
+    private ConnectionClass connection = new ConnectionClass();
     private boolean connectionHasData = false;
-    public ForgotPassword(){
+    public ForgotPassword() throws SQLException, ClassNotFoundException {
         initialize();
 
-        getNewPasswordButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        getNewPasswordButton.addActionListener(e -> {
+            try {
+                if(userNameTextfield.getText().equals("") || emailTextField.getText().equals("")){
+                    incorrectEmailUsernameTextLabel.setText("<html>Email And/or <br>Username<br>Empty!</html>");
+                    return;
+                }
+                Username username = new Username(userNameTextfield.getText());
+                Email email = new Email(emailTextField.getText());
+                if(username.checkIfEqualUsername()&& email.checkIfEmailExists()){
+                    email.sendEmail();
+                }else {
+                    incorrectEmailUsernameTextLabel.setText("<html>Email And/or <br>Username<br>Incorrect!</html>");
 
+                }
+            } catch (SQLException | ClassNotFoundException e1) {
+                e1.printStackTrace();
+            }
+        });
+        emailTextField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(emailTextField.getText().equals("Email"))
+                    emailTextField.setText("");
+            }
+        });
+        userNameTextfield.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(userNameTextfield.getText().equals("Username"))
+                    userNameTextfield.setText("");
             }
         });
     }
+
     /**
      * starts the form.
      */

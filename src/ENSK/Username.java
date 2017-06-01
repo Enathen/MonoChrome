@@ -46,4 +46,19 @@ public class Username {
         }
         return false;
     }
+    public boolean userNameCorrectFormat() {
+        for(int i = 0; i< username.length(); i++){
+            if(!(username.charAt(i) >= 'A' &&
+                    username.charAt(i) <= 'z')){
+                return false;
+
+            }
+        }
+        if(!(username.length() > 3)){
+
+            return false;
+
+        }
+        return true;
+    }
 }

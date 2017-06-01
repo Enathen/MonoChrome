@@ -8,6 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.security.SecureRandom;
 import java.sql.*;
 import java.util.Arrays;
@@ -35,41 +37,47 @@ public class LoginFrame extends JFrame{
         /**
          * when pressing login button check if password is correct and user exist in account database.
          */
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    if(checkIfUsernameAndPasswordExists()){
-                        new WindowSuperMarket("HELLO").setVisible(true);
-                    }
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                } catch (ClassNotFoundException e1) {
-                    e1.printStackTrace();
+        loginButton.addActionListener(e -> {
+            try {
+                if(checkIfUsernameAndPasswordExists()){
+                    new WindowSuperMarket("HELLO").setVisible(true);
                 }
-
-                userPasswordWrong.setText("<html>Username and/or <br>password are wrong!</html>");
-
-                
+            } catch (SQLException | ClassNotFoundException e1) {
+                e1.printStackTrace();
             }
+
+            userPasswordWrong.setText("<html>Username and/or <br>password are wrong!</html>");
+
+
         });
 
-        createNewAccountButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        createNewAccountButton.addActionListener(e -> {
                 try {
-                    new CreateNewAccount().setVisible(true);
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                } catch (ClassNotFoundException e1) {
-                    e1.printStackTrace();
-                }
+                new CreateNewAccount().setVisible(true);
+            } catch (SQLException | ClassNotFoundException e1) {
+                e1.printStackTrace();
             }
         });
-        forgotPasswordButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        forgotPasswordButton.addActionListener(e -> {
+            try {
                 new ForgotPassword().setVisible(true);
+            } catch (SQLException | ClassNotFoundException e1) {
+                e1.printStackTrace();
+            }
+        });
+
+        usernameFormattedTextField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(usernameFormattedTextField.getText().equals("Username"))
+                usernameFormattedTextField.setText("");
+            }
+        });
+        passwordPasswordField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(String.valueOf(passwordPasswordField.getPassword()).equals("Password"))
+                passwordPasswordField.setText("");
             }
         });
     }
@@ -86,19 +94,18 @@ public class LoginFrame extends JFrame{
     /**
      * Check if username already exist in database
      * @return true if there already exist a user false if no user exust.
-     * @throws SQLException
-     * @throws ClassNotFoundException
+     * @throws SQLException if database incorrect
+     * @throws ClassNotFoundException if class not found
      */
     private boolean checkIfUsernameAndPasswordExists() throws SQLException, ClassNotFoundException {
         SaltAndHashPassword saltAndHashPassword = new SaltAndHashPassword(String.valueOf(passwordPasswordField.getPassword()));
         if(connection == null){
             connection.getConnection();
         }
-        String userNameCorrect = userNameCorrect();
-
+        Username username = new Username(usernameFormattedTextField.getText());
         String sql = "select saltedHash, hash from Account where userName = ?";
         PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setString(1, userNameCorrect);
+        statement.setString(1, username.userNameCorrect());
         ResultSet resultSet = statement.executeQuery();
         while (resultSet.next()){
             saltAndHashPassword.setSalt(resultSet.getString(1));
@@ -111,18 +118,4 @@ public class LoginFrame extends JFrame{
         }
         return false;
     }
-    /**
-     * Convert the username to correct format capital letter front rest not capital
-     * @return
-     */
-    private String userNameCorrect() {
-        String string = usernameFormattedTextField.getText();
-        String backupString;
-        backupString = string.substring(0,1).toUpperCase();
-        string =  backupString+string.substring(1).toLowerCase();
-        return string;
-
-    }
-
-
 }

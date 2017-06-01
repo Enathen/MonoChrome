@@ -7,9 +7,7 @@ import ENSK.Username;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 
 import java.sql.*;
 
@@ -71,29 +69,24 @@ public class CreateNewAccount extends JFrame{
                     }
                 }
                 userNameIncorrectLabel.setVisible(false);
-                for(int i = 0; i< usernameTextField.getText().length(); i++){
-                    if(!(usernameTextField.getText().charAt(i) >= 'A' &&
-                            usernameTextField.getText().charAt(i) <= 'z')){
-                        userNameIncorrectLabel.setText("<html>Username incorrect!<br>cant allow character</html>");
+                try {
+                    Username username = new Username(usernameTextField.getText());
+                    if(!username.userNameCorrectFormat()){
+                        userNameIncorrectLabel.setText("<html>Username incorrect!<br>min 4 max 59<br>" +
+                                "A-z allowed letters</html>");
                         userNameIncorrectLabel.setVisible(true);
                         working = false;
-
                     }
-                }
-                if(!(usernameTextField.getText().length() > 3)){
-                    userNameIncorrectLabel.setText("<html>Username incorrect!<br>Atleast 3 char!</html>");
-                    userNameIncorrectLabel.setVisible(true);
-                    working = false;
-
+                } catch (SQLException | ClassNotFoundException e1) {
+                    e1.printStackTrace();
                 }
                 Email email= null;
                 try {
                     email = new Email(emailTextField.getText());
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                } catch (ClassNotFoundException e1) {
+                } catch (SQLException | ClassNotFoundException e1) {
                     e1.printStackTrace();
                 }
+                assert email != null;
                 if(!email.checkIfEmail()){
                     emailIncorrectLabel.setText("<html>Email incorrect!</html>");
                     emailIncorrectLabel.setVisible(true);
@@ -107,22 +100,46 @@ public class CreateNewAccount extends JFrame{
                         emailIncorrectLabel.setVisible(true);
                         working = false;
                     }
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                } catch (ClassNotFoundException e1) {
+                } catch (SQLException | ClassNotFoundException e1) {
                     e1.printStackTrace();
                 }
 
                 if(working){
                     try {
                         addUser();
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    } catch (ClassNotFoundException e1) {
+                    } catch (SQLException | ClassNotFoundException e1) {
                         e1.printStackTrace();
                     }
                 }
 
+            }
+        });
+        emailTextField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(emailTextField.getText().equals("Email"))
+                emailTextField.setText("");
+            }
+        });
+        usernameTextField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(usernameTextField.getText().equals("Username"))
+                usernameTextField.setText("");
+            }
+        });
+        passwordPasswordField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(String.valueOf(passwordPasswordField.getPassword()).equals("Password"))
+                passwordPasswordField.setText("");
+            }
+        });
+        passwordPasswordField1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(String.valueOf(passwordPasswordField1.getPassword()).equals("password"))
+                passwordPasswordField1.setText("");
             }
         });
     }
