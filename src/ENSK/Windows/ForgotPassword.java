@@ -7,10 +7,7 @@ import ENSK.Username;
 import javax.naming.NamingException;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.sql.*;
 
 /**
@@ -37,7 +34,9 @@ public class ForgotPassword extends JFrame {
                 Username username = new Username(userNameTextfield.getText());
                 Email email = new Email(emailTextField.getText());
                 if(username.checkIfEqualUsername()&& email.checkIfEmailExists()){
-                    email.sendEmail();
+                    email.sendEmail(emailTextField.getText());
+                    dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+
                 }else {
                     incorrectEmailUsernameTextLabel.setText("<html>Email And/or <br>Username<br>Incorrect!</html>");
 

@@ -54,10 +54,9 @@ public class ConnectionClass {
 
             if(!resultSet.next()){
                 Statement state2 = connection.createStatement();
-                state2.execute("CREATE TABLE Account(id int, userName varchar(80)," +
-                        "email VARCHAR(60),workstation VARCHAR(60),admin BOOLEAN,saltedHash VARCHAR(60), hash VARCHAR(60),  primary key(id));");
+                state2.execute("CREATE TABLE Account(id int, userName varchar(255)," +
+                        "email VARCHAR(255),workstation VARCHAR(255),admin BOOLEAN,saltedHash VARCHAR(255), hash VARCHAR(255),  primary key(id));");
                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Account VALUES (?,?,?,?,?,?,?);");
-                SaltAndHashPassword saltAndHashPassword = new SaltAndHashPassword("");
                 preparedStatement.setString(2,"Enathen");
                 preparedStatement.setString(3,"j@gmail.com");
                 preparedStatement.setString(4,"Coop Ersboda");

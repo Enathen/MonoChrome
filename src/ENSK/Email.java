@@ -62,9 +62,9 @@ public class Email {
     }
     // Set up the SMTP server.
 
-    public boolean sendEmail() {
-        final String username = "jonathanalexnorberg@gmail.com";
-        final String password = "Hccolh12";
+    public boolean sendEmail(String to) {
+        final String username = "creativeendlessgrowing@gmail.com";
+        final String password = "TossHealthFeastUnderstand99";
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.socketFactory.port", "465");
@@ -78,27 +78,39 @@ public class Email {
             }
         });
         // Construct the message
-        String to = "elinhelgesson96@hotmail.com";
-        String from = "jonathanalexnorberg@gmail.com";
-        String subject = "Hello Darling!";
+        String subject = "Hello new Password!";
 
         try {
+            System.out.println(to);
+            System.out.println(username);
             Message msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress(from));
+            msg.setFrom(new InternetAddress(username));
             msg.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(to));
             msg.setSubject(subject);
-            msg.setText("Dear miss Elin Helgesson! i finally succeeded to send an email!\n" +
-                    "please write back to my messanger when you see this your cute little cutie<3");
+            SaltAndHashPassword saltAndHashPassword = new SaltAndHashPassword("");
+            saltAndHashPassword.createRandomPassword();
+            msg.setText(" your new password is: " + saltAndHashPassword.getPassword());
 
             // Send the message.
 
             Transport.send(msg);
-            System.out.println("email sent succesfully");
+            System.out.println("email sent successfully");
+            PreparedStatement update = connection.prepareStatement
+                    ("UPDATE Account SET saltedHash = ?, hash = ? WHERE email = ?");
+            update.setString(1,saltAndHashPassword.createSalt());
+            update.setString(2,saltAndHashPassword.createHash());
+            update.setString(3, email);
+            update.executeUpdate();
+
             return true;
         } catch (MessagingException e) {
             throw new RuntimeException();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return false;
     }
+
 
 }

@@ -191,6 +191,7 @@ public class CreateNewAccount extends JFrame{
             preparedStatement.execute();
             dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 
+
         }
         userNameIncorrectLabel.setText("Username Exist!");
         userNameIncorrectLabel.setVisible(true);

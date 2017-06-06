@@ -18,14 +18,11 @@ public class SaltAndHashPassword {
         for (int i = 0; i < 50; i++) {
             string += (char)(random.nextInt(58) + 65);
         }
-
         salt = string;
-        System.out.println(salt);
         return string;
     }
     public String createHash(){
         String hash = salt + password;
-        System.out.println(hash);
         return String.valueOf(hash(hash));
 
     }
@@ -36,10 +33,20 @@ public class SaltAndHashPassword {
         for (int i = 0; i < len; i++) {
             h = 37*h + string.charAt(i);
         }
-        System.out.println(h);
         return h;
+    }
+    public void createRandomPassword(){
+        SecureRandom random = new SecureRandom();
+        String string = "";
+        for (int i = 0; i < 8; i++) {
+            string += (char)(random.nextInt(58) + 65);
+        }
+        password = string;
     }
     public void setSalt(String salt){
         this.salt = salt;
+    }
+    public String getPassword(){
+        return password;
     }
 }
