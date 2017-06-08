@@ -51,7 +51,7 @@ public class WindowSuperMarket extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JSVGCanvas svg = new JSVGCanvas();
-        svg.setURI("file:/C:/Users/Enathen/IdeaProjects/ENSK/button.svg");
+        svg.setURI("file:/C:/Users/Enathen/IdeaProjects/ENSK/setButtonCorrectly.svg");
         //svg.setMaximumSize(new Dimension(600,250));
         //testPanel.add(svg);
 

@@ -39,7 +39,7 @@ public class CreateNewAccount extends JFrame{
         comboBox1.addItem("Coop Forum Ersboda");
 
         /**
-         * when create account button listener try to create a new account.
+         * when create account setButtonCorrectly listener try to create a new account.
          */
         createAccountButton.addActionListener(new ActionListener() {
             @Override

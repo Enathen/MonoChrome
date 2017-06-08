@@ -9,9 +9,6 @@ import javax.naming.NamingException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.*;
 
 /**
@@ -20,14 +17,16 @@ import java.sql.*;
 public class LoginFrame extends JFrame{
     private JPasswordField passwordPasswordField;
     private JFormattedTextField usernameFormattedTextField;
-    private JButton loginButton;
-    private JButton forgotPasswordButton;
     private JButton menuButton;
     private JButton createNewAccountButton;
     private JPanel JPanelLoginFrame;
 
     private JLabel welcomeLabel;
     private JLabel userPasswordWrong;
+    private JLabel forgotPasswordLabel;
+    private JLabel loginLabel;
+    private JLabel createNewAccountLabel;
+    private JLabel menuLabel;
     private ConnectionClass connection = new ConnectionClass();
 
     public LoginFrame() throws SQLException, ClassNotFoundException, NamingException {
@@ -35,37 +34,23 @@ public class LoginFrame extends JFrame{
         welcomeLabel.setFont(new Font("default", Font.PLAIN, 20));
         welcomeLabel.setText("<html>Welcome!<br>Please sign in below:</html>");
         /**
-         * when pressing login button check if password is correct and user exist in account database.
+         * when pressing login setButtonCorrectly check if password is correct and user exist in account database.
          */
-        loginButton.addActionListener(e -> {
-            try {
-                if(checkIfUsernameAndPasswordExists()){
-                    new StartFrame().setVisible(true);
-                    dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-                }
-            } catch (SQLException | ClassNotFoundException | NamingException e1) {
-                e1.printStackTrace();
-            }
-
-            userPasswordWrong.setText("<html>Username and/or <br>password are wrong!</html>");
-
-
-        });
-
-        createNewAccountButton.addActionListener(e -> {
+        loginLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
                 try {
-                new CreateNewAccount().setVisible(true);
-            } catch (SQLException | ClassNotFoundException | NamingException e1) {
-                e1.printStackTrace();
+                    if(checkIfUsernameAndPasswordExists()){
+                        new StartFrame().setVisible(true);
+                        dispose ();
+                    }
+                } catch (SQLException | ClassNotFoundException | NamingException e1) {
+                    e1.printStackTrace();
+                }
+                userPasswordWrong.setText("<html>Username and/or <br>password are wrong!</html>");
             }
         });
-        forgotPasswordButton.addActionListener(e -> {
-            try {
-                new ForgotPassword().setVisible(true);
-            } catch (SQLException | ClassNotFoundException | NamingException e1) {
-                e1.printStackTrace();
-            }
-        });
+
 
         usernameFormattedTextField.addMouseListener(new MouseAdapter() {
             @Override
@@ -81,13 +66,38 @@ public class LoginFrame extends JFrame{
                 passwordPasswordField.setText("");
             }
         });
+
+
+        forgotPasswordLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                try {
+                    new ForgotPassword().setVisible(true);
+                } catch (SQLException | ClassNotFoundException | NamingException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        createNewAccountLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                try {
+                    new CreateNewAccount().setVisible(true);
+                } catch (SQLException | ClassNotFoundException | NamingException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
     }
     private void initialize(){
         JPanelLoginFrame.setMinimumSize(new Dimension(540,280));
         try {
-            Image img = ImageIO.read(getClass().getResource("/res/Button.png"));
-            loginButton.setIcon(new ImageIcon(img));
-            loginButton.setBorder(BorderFactory.createEmptyBorder());
+            SetDesignCorrectly setDesignCorrectly = new SetDesignCorrectly();
+
+            setDesignCorrectly.setDesignBlue(menuLabel, 1);
+            setDesignCorrectly.setDesignOrange(forgotPasswordLabel, 0.5);
+            setDesignCorrectly.setDesignLime(loginLabel, 0.5);
+            setDesignCorrectly.setDesignOrange(createNewAccountLabel, 1);
 
         } catch (Exception ex) {
             System.out.println(ex);
