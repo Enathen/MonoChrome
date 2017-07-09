@@ -1,13 +1,20 @@
 package ENSK.Windows;
 
-import javax.imageio.ImageIO;
+import ENSK.Windows.Article.AddArticleFrame;
+import ENSK.Windows.Change.ChangeEmail;
+import ENSK.Windows.Change.ChangePassword;
+import ENSK.Windows.Change.ChangeUsername;
+import ENSK.Windows.Change.ChangeWorkplace;
+import ENSK.Windows.Design.SetDesignCorrectly;
+import ENSK.Windows.Login.LoginFrame;
+
+import javax.naming.NamingException;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * Created by Enathen on 2017-06-06.
@@ -45,8 +52,24 @@ public class StartFrame extends JFrame{
     private JLabel startLabel;
     private JLabel feedbackLabel;
     private JLabel crewLabel;
+    private JLabel welcomeLabel;
+    private JLabel changeArticleLabel;
+    private JLabel printSignsLabel;
 
-    public StartFrame(){
+    String userName;
+    private AddArticleFrame addArticleFrame = new AddArticleFrame();
+    private ChangeEmail changeEmailFrame = new ChangeEmail();
+    private ChangeWorkplace changeWorkplaceFrame = new ChangeWorkplace();
+    private ChangeUsername changeUsernameFrame = new ChangeUsername();
+    private ChangePassword changePasswordFrame = new ChangePassword();
+
+    public StartFrame(String userName) {
+        this.userName = userName;
+
+        System.out.println(userName);
+
+        welcomeLabel.setFont(new Font("default", Font.BOLD, 20));
+        welcomeLabel.setText("Welcome "+ userName + "!");
         initialize();
 
         /**
@@ -89,6 +112,48 @@ public class StartFrame extends JFrame{
                 }
             }
         });
+        logoutLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                try {
+                    new LoginFrame().setVisible(true);
+                    dispose();
+                } catch (SQLException | ClassNotFoundException | NamingException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        addArticleLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                addArticleFrame.setVisible(true);
+            }
+        });
+
+        changePasswordLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                changePasswordFrame.setVisible(true);
+            }
+        });
+        changeEmailLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                changeEmailFrame.setVisible(true);
+            }
+        });
+        changeUsernameLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                changeUsernameFrame.setVisible(true);
+            }
+        });
+        changeWorkLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                changeWorkplaceFrame.setVisible(true);
+            }
+        });
     }
 
     /**
@@ -96,7 +161,7 @@ public class StartFrame extends JFrame{
      */
     private void initialize(){
         JPanelStartFrame.setMinimumSize(new Dimension(540,280));
-
+        JPanelStartFrame.setBackground(Color.white);
 
         setContentPane(JPanelStartFrame);
         SetDesignCorrectly setDesignCorrectly = new SetDesignCorrectly();
@@ -107,15 +172,19 @@ public class StartFrame extends JFrame{
         setDesignCorrectly.setDesignLime(statisticsLabel,1);
         setDesignCorrectly.setDesignLime(stockLabel,1);
         setDesignCorrectly.setDesignLime(removeArticleLabel,1);
+        setDesignCorrectly.setDesignLime(changeArticleLabel,1);
+        setDesignCorrectly.setDesignLime(printSignsLabel,1);
         setDesignCorrectly.setDesignLime(expiringItemsLabel,1);
         setDesignCorrectly.setDesignLime(tipsLabel,1);
         setDesignCorrectly.setDesignLime(whatLabel,1);
 
+        setDesignCorrectly.setDesignBlue(menuLabel,1);
         setDesignCorrectly.setDesignBlue(generalSettingLabel,1);
         setDesignCorrectly.setDesignBlue(startLabel,1);
         setDesignCorrectly.setDesignBlue(feedbackLabel,1);
         setDesignCorrectly.setDesignBlue(crewLabel,1);
-        setDesignCorrectly.setDesignBlue(menuLabel,1);
+
+
         generalSettingLabel.setVisible(false);
         startLabel.setVisible(false);
         feedbackLabel.setVisible(false);
@@ -135,26 +204,13 @@ public class StartFrame extends JFrame{
 
         setDesignCorrectly.setDesignBlue(logoutLabel,1);
 
-
-
-
-
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        System.out.println(getContentPane());
-
-
-
-        try {
-            Image img = null;
-            upperLeftLabel.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/res/upperLeft.png"))));
-            lowerLeftLabel.setIcon(new ImageIcon( ImageIO.read(getClass().getResource("/res/lowerLeft.png"))));
-            upperRightLabel.setIcon(new ImageIcon( ImageIO.read(getClass().getResource("/res/upperRight.png"))));
-            lowerRightLabel.setIcon(new ImageIcon( ImageIO.read(getClass().getResource("/res/lowerRight.png"))));
-            stapleLeftLabel.setIcon(new ImageIcon( ImageIO.read(getClass().getResource("/res/stapleLeft.png"))));
-            stapleRightLabel.setIcon(new ImageIcon( ImageIO.read(getClass().getResource("/res/stapleRight.png"))));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        setDesignCorrectly.setButtonCorrectly("/res/upperLeft.png", upperLeftLabel);
+        setDesignCorrectly.setButtonCorrectly("/res/lowerLeft.png", lowerLeftLabel);
+        setDesignCorrectly.setButtonCorrectly("/res/upperRight.png", upperRightLabel);
+        setDesignCorrectly.setButtonCorrectly("/res/lowerRight.png", lowerRightLabel);
+        setDesignCorrectly.setButtonCorrectly("/res/stapleLeft.png", stapleLeftLabel);
+        setDesignCorrectly.setButtonCorrectly("/res/stapleRight.png", stapleRightLabel);
         pack();
         setVisible(true);
         setResizable(false);

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="ENSK.Windows.Change.ChangeEmail">
+  <grid id="27dc6" binding="JPanelChangeEmail" layout-manager="GridLayoutManager" row-count="6" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="0" left="0" bottom="0" right="0"/>
+    <constraints>
+      <xy x="20" y="20" width="300" height="250"/>
+    </constraints>
+    <properties>
+      <minimumSize width="300" height="250"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <hspacer id="27323">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="2" anchor="0" fill="1" indent="0" use-parent-layout="false">
+            <minimum-size width="25" height="-1"/>
+            <preferred-size width="25" height="-1"/>
+            <maximum-size width="25" height="-1"/>
+          </grid>
+        </constraints>
+      </hspacer>
+      <vspacer id="8012c">
+        <constraints>
+          <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </vspacer>
+      <component id="dd96b" class="javax.swing.JTextField" binding="newEmailTextField" default-binding="true">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="New Email"/>
+        </properties>
+      </component>
+      <component id="14f65" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Password:"/>
+        </properties>
+      </component>
+      <component id="1ae95" class="javax.swing.JLabel" binding="changeEmailLabel">
+        <constraints>
+          <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Change Email"/>
+        </properties>
+      </component>
+      <component id="4319d" class="javax.swing.JLabel" binding="emailIncorrectLabel">
+        <constraints>
+          <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+      <hspacer id="27a63">
+        <constraints>
+          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+            <minimum-size width="100" height="-1"/>
+          </grid>
+        </constraints>
+      </hspacer>
+      <component id="731b3" class="javax.swing.JLabel" binding="passwordIncorrectLabel">
+        <constraints>
+          <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="7264a" class="javax.swing.JLabel" binding="noConnectionLabel">
+        <constraints>
+          <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="No Connection"/>
+          <visible value="true"/>
+        </properties>
+      </component>
+      <component id="98fda" class="javax.swing.JPasswordField" binding="passwordField">
+        <constraints>
+          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="czxvcxvdsa"/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>

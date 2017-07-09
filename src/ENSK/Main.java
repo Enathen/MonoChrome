@@ -1,6 +1,7 @@
 package ENSK;
 
-import ENSK.Windows.LoginFrame;
+import ENSK.Windows.Article.Article;
+import ENSK.Windows.Login.LoginFrame;
 
 import javax.naming.NamingException;
 import java.sql.SQLException;
@@ -21,7 +22,7 @@ public class Main {
         }
 
 
-        Article milk = createArticle("Norrmejeri 3,0% fett", 12.74f, 15.75f, 5, 12, 2017, 0000001);
+        /*Article milk = createArticle("Norrmejeri 3,0% fett", 12.74f, 15.75f, 5, 12, 2017, 0000001);
         milk.addStockAmount(105);
         Article bregott = createArticle("Bregott extra Salt", 12.99f, 17.95f, 7, 5, 2017, 0000002);
         bregott.addStockAmount(230);
@@ -34,7 +35,7 @@ public class Main {
         Category mejeri = new Category("Mejeri");
         Category deli = new Category("Deli");
         Category allArticlesInStore = new Category("All Articles");
-        /*deli.addArticle(milk);
+        deli.addArticle(milk);
         deli.addArticle(magneficoChili);
         mejeri.addArticle(bregott);
         mejeri.addArticle(pucko);
@@ -48,11 +49,11 @@ public class Main {
         statistics.CompareTwoCategories(mejeri, deli);
         statistics.printAllCategoriesInStatistics();
         allArticlesInStore.addSeveralArticles(deli.treeSetOfArticles);
-        allArticlesInStore.addSeveralArticles(mejeri.treeSetOfArticles);*/
+        allArticlesInStore.addSeveralArticles(mejeri.treeSetOfArticles);
 
 
-        //allArticlesInStore.printPieGraph();
-        //allArticlesInStore.printBarGraph();
+        allArticlesInStore.printPieGraph();
+        allArticlesInStore.printBarGraph();*/
 
 
     }
